@@ -13,16 +13,15 @@
     path: "{{artifact_destination}}"
     checksum: md5
   register: deployed
-  failed_when: new.stat.checksum == deployed.stat.checksum
-  become: true
-  become_user: tomcat
+  failed_when:
+    - deployed.stat.checksum is defined
+    - new.stat.checksum == deployed.stat.checksum
 
 - name: Copy new artifact to destination
   copy:
     src: "{{artifact_path}}"
     dest: "{{artifact_destination}}"
-    owner: tomcat
-    group: tomcat
+    # TODO: add tomcat user to each tomcat cotnainer and update this role
+    owner: root
+    group: root
     mode: 0644
-  become: true
-  become_user: tomcat
