@@ -1,2 +1,28 @@
 ---
-# tasks file for deploy-to-tomcat
+- name: Get hash of new artifact
+  local_action:
+    module: stat
+    path: "{{artifact_path}}"
+    checksum: md5
+  register: new
+  failed_when: new.stat.exists == False
+  become: false
+
+- name: Get hash of currently deployed artifact
+  stat:
+    path: "{{artifact_destination}}"
+    checksum: md5
+  register: deployed
+  failed_when: new.stat.checksum == deployed.stat.checksum
+  become: true
+  become_user: tomcat
+
+- name: Copy new artifact to destination
+  copy:
+    src: "{{artifact_path}}"
+    dest: "{{artifact_destination}}"
+    owner: tomcat
+    group: tomcat
+    mode: 0644
+  become: true
+  become_user: tomcat

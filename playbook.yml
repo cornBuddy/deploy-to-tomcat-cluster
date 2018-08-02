@@ -1,0 +1,7 @@
+---
+- hosts: tomcat-cluster
+
+  roles:
+    - role: deploy-to-tomcat
+      uri: "{{deploy_uri}}"
+      artifact_path: "{{artifact_path}}"

@@ -1,0 +1,2 @@
+[tomcat-cluster]
+tom-[a:c] ansible_connection=docker

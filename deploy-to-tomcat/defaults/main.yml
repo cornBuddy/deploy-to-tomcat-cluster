@@ -1,2 +1,3 @@
 ---
-# defaults file for deploy-to-tomcat
+uri: "/helloworld"
+artifact_path: "./helloworld.war"
