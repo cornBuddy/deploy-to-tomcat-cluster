@@ -1,0 +1,48 @@
+---
+- name: Create group
+  group:
+    name: "{{user.primary_group}}"
+    gid: "{{user.group_id}}"
+  become: true
+
+- name: Create user
+  user:
+    group: "{{user.primary_group}}"
+    name: "{{user.name}}"
+    uid: "{{user.id}}"
+  become: true
+
+- name: Copy key
+  authorized_key:
+    user: "{{user.name}}"
+    state: present
+    key: "{{ lookup('file', item) }}"
+  loop: "{{user.auth_keys}}"
+
+- name: Set defaults
+  lineinfile:
+    path: "/etc/sudoers.d/{{user.name}}"
+    line: "Defaults:{{user.name}} {{item}}"
+    validate: '/usr/sbin/visudo -cf %s'
+    create: true
+  become: true
+  backup: true
+  loop: "{{user.defaults}}"
+
+- name: Config sudo
+  lineinfile:
+    path: "/etc/sudoers.d/{{user.name}}"
+    line: "{{user.name}} {{item}}"
+    validate: '/usr/sbin/visudo -cf %s'
+    create: true
+  become: true
+  backup: true
+  loop: "{{user.priviliges}}"
+
+- name: Test if group created
+  shell: "grep -P {{_is_group_created}} /etc/group"
+  changed_when: false
+
+- name: Test if user created
+  shell: "grep -P {{_is_user_created}} /etc/passwd"
+  changed_when: false

@@ -1,0 +1,11 @@
+---
+default_config:
+  priviliges:
+    - "ALL=(ALL) NOPASSWD: /bin/su"
+  defaults:
+    - "!requiretty"
+  name: "user"
+  id: 65534
+  primary_group: "{{config.name}}"
+  group_id: 65534
+  auth_keys: []
