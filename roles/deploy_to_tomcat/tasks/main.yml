@@ -1,5 +1,12 @@
 ---
 - name: Change owner of directory
+  file:
+    path: "{{q('env', 'CATALINA_HOME')}}"
+    recurse: true
+    owner: tomcat
+    group: tomcat
+    state: directory
+  become: true
 
 - name: Proceed healthcheck
 
@@ -15,5 +22,7 @@
     mode: 0644
 
 - name: Check is artifact deployed
+
+- name: Gracefully restart apache
 
 - name: If deployed to more than 50% nodes, replase old nodes from LB with new
