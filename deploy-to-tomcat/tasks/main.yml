@@ -1,9 +1,0 @@
----
-- name: Copy new artifact to destination
-  copy:
-    src: "{{artifact_path}}"
-    dest: "{{artifact_destination}}"
-    # TODO: add tomcat user to each tomcat cotnainer and update this role
-    owner: root
-    group: root
-    mode: 0644

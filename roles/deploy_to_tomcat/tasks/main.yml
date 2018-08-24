@@ -1,0 +1,19 @@
+---
+- name: Change owner of directory
+
+- name: Proceed healthcheck
+
+- name: Exclude node to deploy from LB
+
+# TODO: https://tomcat.apache.org/tomcat-8.0-doc/manager-howto.html#Deploy_A_New_Application_Archive_(WAR)_Remotely
+- name: Copy new artifact to destination
+  copy:
+    src: "{{artifact_path}}"
+    dest: "{{artifact_destination}}"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Check is artifact deployed
+
+- name: If deployed to more than 50% nodes, replase old nodes from LB with new
