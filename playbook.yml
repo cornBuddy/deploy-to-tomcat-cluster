@@ -2,6 +2,15 @@
 - hosts: tomcat-cluster
 
   roles:
-    - role: deploy-to-tomcat
+    - role: add_user
+      config:
+        name: tomcat
+        primary_group: tomcat
+        id: 1000
+        group_id: 1000
+        priviliges:
+          - "ALL=(ALL) NOPASSWD: ALL"
+
+    - role: deploy_to_tomcat
       uri: "{{deploy_uri}}"
       artifact_path: "{{artifact_path}}"
