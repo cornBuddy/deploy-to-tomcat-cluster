@@ -1,0 +1,3 @@
+---
+- name: Exclude node
+  debug: msg="{{node_hostname}}"

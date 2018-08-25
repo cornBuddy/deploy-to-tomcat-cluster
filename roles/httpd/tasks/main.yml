@@ -1,0 +1,4 @@
+---
+# tasks file for httpd
+- name: http.main task
+  debug: msg=httpd.main task
