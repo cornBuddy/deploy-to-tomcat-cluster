@@ -1,4 +1,9 @@
 ---
+- name: Install sudo package
+  package:
+    state: present
+    name: sudo
+
 - name: Create group
   group:
     name: "{{user.primary_group}}"
@@ -26,7 +31,6 @@
     validate: '/usr/sbin/visudo -cf %s'
     create: true
   become: true
-  backup: true
   loop: "{{user.defaults}}"
 
 - name: Config sudo
@@ -36,7 +40,6 @@
     validate: '/usr/sbin/visudo -cf %s'
     create: true
   become: true
-  backup: true
   loop: "{{user.priviliges}}"
 
 - name: Test if group created
