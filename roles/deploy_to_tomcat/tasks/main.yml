@@ -10,18 +10,36 @@
 
 # - name: Proceed healthcheck
 
-# - name: Exclude node to deploy from LB
+- name: Exclude node to deploy from LB
+  include_role:
+    name: httpd
+    tasks_from: exclude_node
+  vars:
+    node_hostname: "{{inventory_hostname}}"
 
-- name: Copy new artifact to destination
+- name: Backup previous version
   copy:
-    src: "{{artifact_path}}"
-    dest: "{{artifact_destination}}"
-    owner: root
-    group: root
+    remote_src: "{{q('env', 'CATALINA_HOME')}}/webapps/{{artifact_name}}"
+    dest: "{{q('env', 'CATALINA_HOME')}}/webapps/backup/{{artifact_name}}"
+    owner: tomcat
+    group: tomcat
     mode: 0644
+
+- name: Download artifact to tomcat manager
+  uri:
+    url: "http://localhost:8080/manager/text/deploy"
+    body: "{{q('file', artifact_path)}}"
+    user: "{{deployer}}"
+    password: "{{deployer_password}}"
 
 # - name: Check is artifact deployed
 
-# - name: Add node to loadbalancer
+- name: Add node to loadbalancer
+  include_role:
+    name: httpd
+    tasks_from: include_node
+  vars:
+    node_hostname: "{{inventory_hostname}}"
+
 
 # - name: If deployed to more than 50% nodes, replase old nodes from LB with new

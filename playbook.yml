@@ -14,3 +14,5 @@
     - role: deploy_to_tomcat
       uri: "{{deploy_uri}}"
       artifact_path: "{{artifact_path}}"
+      deployer: "{{deployer}}"
+      deployer_password: "{{deployer_password}}"

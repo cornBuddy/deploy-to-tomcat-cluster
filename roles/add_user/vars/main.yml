@@ -1,6 +1,5 @@
 ---
 user: "{{default_config | combine(config)}}"
-run_role_once: user.run_role_once
 
 _is_user_created: "{{user.name}}:x:{{user.id}}:{{user.group_id}}"
 _is_group_created: "{{user.primary_group}}:x:{{user.group_id}}"

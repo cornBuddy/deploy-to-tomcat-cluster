@@ -1,4 +1,3 @@
 ---
 uri: "/helloworld"
 artifact_path: "./helloworld.war"
-tomcat_home: "/usr/local/tomcat/"

@@ -1,3 +1,2 @@
 ---
 artifact_name: "{{artifact_path | basename}}"
-artifact_destination: "{{tomcat_home}}/webapps/{{artifact_name}}"
