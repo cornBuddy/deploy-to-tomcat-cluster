@@ -17,13 +17,6 @@
     uid: "{{user.id}}"
   become: true
 
-- name: Copy key
-  authorized_key:
-    user: "{{user.name}}"
-    state: present
-    key: "{{ lookup('file', item) }}"
-  loop: "{{user.auth_keys}}"
-
 - name: Set defaults
   lineinfile:
     path: "/etc/sudoers.d/{{user.name}}"
