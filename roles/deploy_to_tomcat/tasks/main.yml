@@ -19,7 +19,8 @@
 
 - name: Backup previous version
   copy:
-    remote_src: "{{q('env', 'CATALINA_HOME')}}/webapps/{{artifact_name}}"
+    src: "{{q('env', 'CATALINA_HOME')}}/webapps/{{artifact_name}}"
+    remote_src: true
     dest: "{{q('env', 'CATALINA_HOME')}}/webapps/backup/{{artifact_name}}"
     owner: tomcat
     group: tomcat
