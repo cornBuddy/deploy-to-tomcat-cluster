@@ -16,3 +16,4 @@
       artifact_path: "{{artifact_path}}"
       deployer: "{{deployer}}"
       deployer_password: "{{deployer_password}}"
+      tags: ['deploy']

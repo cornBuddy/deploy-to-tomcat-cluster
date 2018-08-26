@@ -1,7 +1,7 @@
 ---
 - name: Change owner of directory
   file:
-    path: "{{q('env', 'CATALINA_HOME')}}"
+    path: "{{ansible_env.CATALINA_HOME}}"
     recurse: true
     owner: tomcat
     group: tomcat
@@ -17,21 +17,41 @@
   vars:
     node_hostname: "{{inventory_hostname}}"
 
+- name: Check is artifact deployed
+  stat:
+    path: "{{ansible_env.CATALINA_HOME}}/webapps/{{artifact_name}}"
+  register: artifact_stat_result
+
 - name: Backup previous version
   copy:
-    src: "{{lookup('env', 'CATALINA_HOME')}}/webapps/{{artifact_name}}"
+    src: "{{ansible_env.CATALINA_HOME}}/webapps/{{artifact_name}}"
     remote_src: true
-    dest: "{{lookup('env', 'CATALINA_HOME')}}/webapps/backup/{{artifact_name}}"
+    dest: "{{ansible_env.CATALINA_HOME}}/webapps/{{artifact_name}}.bkp"
+    owner: tomcat
+    group: tomcat
+    mode: 0644
+  when: artifact_stat_result.stat.exists
+
+- name: Copy artifact to remote
+  copy:
+    src: "{{artifact_path}}"
+    dest: "/tmp/{{artifact_name}}"
     owner: tomcat
     group: tomcat
     mode: 0644
 
+- name: Ensure curl is installed
+  package:
+    state: present
+    name: curl
+
 - name: Download artifact to tomcat manager
-  uri:
-    url: "http://localhost:8080/manager/text/deploy"
-    body: "{{q('file', artifact_path)}}"
-    user: "{{deployer}}"
-    password: "{{deployer_password}}"
+  command: >-
+    /usr/bin/curl --user {{deployer}}:{{deployer_password}}
+    --upload-file /tmp/{{artifact_name}}
+    http://localhost:{{tomcat_port}}/manager/text/deploy?path=/{{deploy_uri}}
+  register: deploy_output
+  warn: false
 
 # - name: Check is artifact deployed
 

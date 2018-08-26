@@ -1,3 +1,4 @@
 ---
 uri: "/helloworld"
 artifact_path: "./helloworld.war"
+tomcat_port: 8080

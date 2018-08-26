@@ -1,2 +1,3 @@
 ---
 artifact_name: "{{artifact_path | basename}}"
+deploy_uri: "{{deploy_uri | regex_replace('^/', '')}}"
