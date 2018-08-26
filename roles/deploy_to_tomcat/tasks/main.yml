@@ -17,7 +17,7 @@
   vars:
     node_hostname: "{{inventory_hostname}}"
 
-- name: Check is artifact deployed
+- name: Check is artifact copied to webapps folder
   stat:
     path: "{{ansible_env.CATALINA_HOME}}/webapps/{{artifact_name}}"
   register: artifact_stat_result
@@ -31,6 +31,19 @@
     group: tomcat
     mode: 0644
   when: artifact_stat_result.stat.exists
+
+- name: Check is artfact deployed
+  command: >-
+    /usr/bin/curl --user {{deployer}}:{{deployer_password}}
+    http://localhost:{{tomcat_port}}/manager/text/list
+  register: tomcat_app_list
+
+- name: Undeploy previous artefact
+  command: >-
+    /usr/bin/curl --user {{deployer}}:{{deployer_password}}
+    http://localhost:{{tomcat_port}}/manager/text/undeploy?path=/{{deploy_uri}}
+  when: "deploy_uri in tomcat_app_list.stdout"
+  register: undeploy
 
 - name: Copy artifact to remote
   copy:
@@ -51,7 +64,11 @@
     --upload-file /tmp/{{artifact_name}}
     http://localhost:{{tomcat_port}}/manager/text/deploy?path=/{{deploy_uri}}
   register: deploy_output
-  warn: false
+
+- name: Fail if deploy was not successful
+  fail:
+    msg: "Deploy process failed with message {{deploy_output.stdout}}"
+  when: deploy_output.stdout is search('FAIL')
 
 # - name: Check is artifact deployed
 
