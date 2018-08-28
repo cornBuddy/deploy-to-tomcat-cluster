@@ -4,6 +4,11 @@
 # at each iterate we exclude cluster from apache (againt httpd)
 # uplodad the artifact into tomcat node and then adding node to the loadbalancer
 # again
+# https://docs.ansible.com/ansible/2.6/user_guide/playbooks_blocks.html#error-handling
+# https://docs.ansible.com/ansible/latest/user_guide/playbooks_delegation.html#rolling-update-batch-size
+# https://docs.ansible.com/ansible/2.6/scenario_guides/guide_rolling_upgrade.html
+# TODO: test if tomcat instance can be excluded from vhosts.conf
+# TODO: add custom fact to mark that this user is already created
 - hosts: tomcat-cluster
 
   roles:
