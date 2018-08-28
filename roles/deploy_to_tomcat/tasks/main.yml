@@ -43,7 +43,6 @@
     /usr/bin/curl --user {{deployer}}:{{deployer_password}}
     http://localhost:{{tomcat_port}}/manager/text/undeploy?path=/{{deploy_uri}}
   when: "deploy_uri in tomcat_app_list.stdout"
-  register: undeploy
 
 - name: Copy artifact to remote
   copy:
@@ -64,13 +63,9 @@
     --upload-file /tmp/{{artifact_name}}
     http://localhost:{{tomcat_port}}/manager/text/deploy?path=/{{deploy_uri}}
   register: deploy_output
+  failed_when: deploy_output.stdout is search('FAIL')
 
-- name: Fail if deploy was not successful
-  fail:
-    msg: "Deploy process failed with message {{deploy_output.stdout}}"
-  when: deploy_output.stdout is search('FAIL')
-
-# - name: Check is artifact deployed
+# - name: Check is artifact deployed. If not, rollup backup artifact and exit
 
 - name: Add node to loadbalancer
   include_role:
