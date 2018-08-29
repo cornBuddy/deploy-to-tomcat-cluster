@@ -1,2 +1,3 @@
 ---
-# handlers file for httpd
+- name: graceful restart
+  debug: msg="gracefully restarted"

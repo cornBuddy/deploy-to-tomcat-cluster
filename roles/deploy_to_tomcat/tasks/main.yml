@@ -67,3 +67,4 @@
     tasks_from: include_node
   vars:
     node_hostname: "{{inventory_hostname}}"
+  delegate_to: httpd
