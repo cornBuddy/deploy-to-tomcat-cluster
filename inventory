@@ -1,3 +1,4 @@
+[webservers]
 httpd ansible_connection=docker
 
 [tomcat-cluster]

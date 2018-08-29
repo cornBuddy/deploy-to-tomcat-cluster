@@ -29,7 +29,8 @@
         tasks_from: exclude_node
       vars:
         node_hostname: "{{inventory_hostname}}"
-      delegate_to: httpd
+      delegate_to: "{{item}}"
+      with_items: groups.webservers
 
   tasks:
     - name: Proceed rolling update
@@ -49,6 +50,7 @@
             tasks_from: exclude_node
           vars:
             node_hostname: "{{inventory_hostname}}"
-          delegate_to: httpd
+          delegate_to: "{{item}}"
+          with_items: groups.webservers
 
 # - name: If deployed to more than 50% nodes, replase old nodes from LB with new
