@@ -7,15 +7,9 @@
     group: tomcat
     state: directory
   become: true
+  become_user: root
 
-# - name: Proceed healthcheck
-
-- name: Exclude node to deploy from LB
-  include_role:
-    name: httpd
-    tasks_from: exclude_node
-  vars:
-    node_hostname: "{{inventory_hostname}}"
+# TODO: Proceed healthcheck
 
 - name: Check is artifact copied to webapps folder
   stat:
@@ -56,6 +50,8 @@
   package:
     state: present
     name: curl
+  become: true
+  become_user: root
 
 - name: Download artifact to tomcat manager
   command: >-
@@ -65,14 +61,9 @@
   register: deploy_output
   failed_when: deploy_output.stdout is search('FAIL')
 
-# - name: Check is artifact deployed. If not, rollup backup artifact and exit
-
 - name: Add node to loadbalancer
   include_role:
     name: httpd
     tasks_from: include_node
   vars:
     node_hostname: "{{inventory_hostname}}"
-
-
-# - name: If deployed to more than 50% nodes, replase old nodes from LB with new

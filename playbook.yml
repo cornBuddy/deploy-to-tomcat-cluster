@@ -8,22 +8,47 @@
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_delegation.html#rolling-update-batch-size
 # https://docs.ansible.com/ansible/2.6/scenario_guides/guide_rolling_upgrade.html
 # TODO: test if tomcat instance can be excluded from vhosts.conf
-# TODO: add custom fact to mark that this user is already created
 - hosts: tomcat-cluster
+  serial: 1
 
-  roles:
-    - role: add_user
-      config:
-        name: tomcat
-        primary_group: tomcat
-        id: 1000
-        group_id: 1000
-        priviliges:
-          - "ALL=(ALL) NOPASSWD: ALL"
+  pre-tasks:
+    - name: Configure tomcat user
+      include_role:
+        name: add_user
+      vars:
+        config:
+          name: tomcat
+          primary_group: tomcat
+          id: 1000
+          group_id: 1000
+          priviliges:
+            - "ALL=(ALL) NOPASSWD: ALL"
+    - name: Exclude node to deploy from LB
+      include_role:
+        name: httpd
+        tasks_from: exclude_node
+      vars:
+        node_hostname: "{{inventory_hostname}}"
+      delegate_to: httpd
 
-    - role: deploy_to_tomcat
-      uri: "{{deploy_uri}}"
-      artifact_path: "{{artifact_path}}"
-      deployer: "{{deployer}}"
-      deployer_password: "{{deployer_password}}"
-      tags: ['deploy']
+  tasks:
+    - name: Proceed rolling update
+      block:
+        - include_role:
+            name: deploy_to_tomcat
+          vars:
+            uri: "{{deploy_uri}}"
+            artifact_path: "{{artifact_path}}"
+            deployer: "{{deployer}}"
+            deployer_password: "{{deployer_password}}"
+          become: true
+          become_user: tomcat
+      rescue:
+        - include_role:
+            name: httpd
+            tasks_from: exclude_node
+          vars:
+            node_hostname: "{{inventory_hostname}}"
+          delegate_to: httpd
+
+# - name: If deployed to more than 50% nodes, replase old nodes from LB with new
