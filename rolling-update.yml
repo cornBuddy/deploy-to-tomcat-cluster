@@ -24,13 +24,13 @@
           priviliges:
             - "ALL=(ALL) NOPASSWD: ALL"
     - name: Exclude node to deploy from LB
-      include_role:
+      # https://github.com/ansible/ansible/issues/35398
+      import_role:
         name: httpd
         tasks_from: exclude_node
       vars:
         node_hostname: "{{inventory_hostname}}"
-      delegate_to: "{{item}}"
-      with_items: groups.webservers
+      delegate_to: "httpd"
 
   tasks:
     - name: Proceed rolling update
