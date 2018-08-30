@@ -1,11 +1,2 @@
 ---
 # https://httpd.apache.org/docs/2.4/programs/apachectl.html
-- name: Exclude node
-  command: hostname
-  notify:
-    - graceful restart
-  changed_when: true
-  register: hostname
-
-- name: debug
-  debug: "msg={{hostname.stdout}}"
