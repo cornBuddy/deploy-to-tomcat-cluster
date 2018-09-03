@@ -1,3 +1,13 @@
 ---
+- name: apply changes
+  command: hostname
+  # fix:
+  # /etc/libapache2-mod-jk/workers.properties
+  # /usr/local/apache2/conf/extra/httpd-vhosts.conf
+  # with customs facts set from appropriate tasks
+  # run syntax check
+  notify:
+    - graceful restart
+
 - name: graceful restart
   command: apachectl graceful

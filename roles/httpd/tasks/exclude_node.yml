@@ -1,2 +1,9 @@
 ---
 # https://httpd.apache.org/docs/2.4/programs/apachectl.html
+- name: exclude node
+  set_fact:
+    processed_nodes: "{{processed_nodes  | difference(node_hostname)}}"
+  changed_when: true
+  notify: apply changes
+
+- debug: "msg={{processed_nodes}}"

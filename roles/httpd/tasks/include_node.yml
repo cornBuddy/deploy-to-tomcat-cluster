@@ -1,3 +1,11 @@
 ---
 # https://httpd.apache.org/docs/2.4/programs/apachectl.html
-# can safely edit only vhosts.xml
+# /etc/libapache2-mod-jk/workers.properties
+# /usr/local/apache2/conf/extra/httpd-vhosts.conf
+- name: include node
+  set_fact:
+    processed_nodes: "{{processed_nodes + [node_hostname]}}"
+  changed_when: true
+  notify: apply changes
+
+- debug: "msg={{processed_nodes}}"

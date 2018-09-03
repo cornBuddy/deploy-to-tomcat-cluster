@@ -1,0 +1,15 @@
+---
+- hosts: httpd
+  gather_facts: false
+  vars:
+    processed_nodes: []
+
+  tasks:
+    - name: Set fact
+      set_fact:
+        processed_nodes: "{{processed_nodes + [item]}}"
+      delegate_to: item
+      with_items: "{{ groups['tomcat-cluster'] }}"
+
+    - name: debug
+      debug: "msg={{processed_nodes}}"
