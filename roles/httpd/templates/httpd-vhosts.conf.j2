@@ -1,0 +1,25 @@
+<VirtualHost *:80>
+    ServerName localhost
+    ProxyPreserveHost On
+
+    <Proxy "balancer://lb">
+    {% for node in processed_nodes %}
+        BalancerMember "ajp://{{node}}:8009" loadfactor={{hostvars[node]['apache_loadfactor']}}
+    {% endfor %}
+        ProxySet lbmethod=bytraffic
+    </Proxy>
+    ProxyPass "/" "balancer://lb/"
+</VirtualHost>
+
+<VirtualHost *:8080>
+    ProxyPass / http://jenkins:8080/ nocanon
+    ProxyPassReverse / http://jenkins:8080/
+    ProxyRequests Off
+    AllowEncodedSlashes NoDecode
+
+    <Proxy http://localhost:8080*>
+        Order deny,allow
+        Allow from all
+    </Proxy>
+</VirtualHost>
+

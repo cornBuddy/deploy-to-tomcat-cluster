@@ -1,13 +1,39 @@
 ---
+# fix:
+# /etc/libapache2-mod-jk/workers.properties
+# /usr/local/apache2/conf/extra/httpd-vhosts.conf
+# with customs facts set from appropriate tasks
+# run syntax check
 - name: apply changes
   debug: "msg={{processed_nodes}}"
-  # fix:
-  # /etc/libapache2-mod-jk/workers.properties
-  # /usr/local/apache2/conf/extra/httpd-vhosts.conf
-  # with customs facts set from appropriate tasks
-  # run syntax check
+  changed_when: processed_nodes | length > 0
   notify:
+    - generate vhosts.conf
+    - generate workers.properties
     - graceful restart
+
+- name: generate vhosts.conf
+  template:
+    src: httpd-vhosts.conf.j2
+    dest: /usr/local/apache2/conf/extra/httpd-vhosts.conf
+    mode: 0644
+    unsafe_writes: true
+  notify: test configuration
+
+- name: generate workers.properties
+  template:
+    src: workers.properties.j2
+    dest: /etc/libapache2-mod-jk/workers.properties
+    mode: 0644
+    unsafe_writes: true
+  notify: test configuration
+
+- name: test configuration
+  command: apachectl configtest
+  register: configtest
+  failed_when:
+    - configtest.rc > 0
+    - configtest.stderr != ""
 
 - name: graceful restart
   command: apachectl graceful

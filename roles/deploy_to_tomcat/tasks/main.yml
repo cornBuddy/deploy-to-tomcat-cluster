@@ -61,6 +61,8 @@
   register: deploy_output
   failed_when: deploy_output.stdout is search('FAIL')
 
+# TODO: test if artifact deployed
+
 - name: Add node to loadbalancer
   include_role:
     name: httpd
