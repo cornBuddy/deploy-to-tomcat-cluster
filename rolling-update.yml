@@ -1,13 +1,7 @@
 ---
-# I suspect a loop should be used there
-# as an iterable there should be tomcat-cluster group
-# at each iterate we exclude cluster from apache (againt httpd)
-# uplodad the artifact into tomcat node and then adding node to the loadbalancer
-# again
 # https://docs.ansible.com/ansible/2.6/user_guide/playbooks_blocks.html#error-handling
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_delegation.html#rolling-update-batch-size
 # https://docs.ansible.com/ansible/2.6/scenario_guides/guide_rolling_upgrade.html
-# TODO: test if tomcat instance can be excluded from vhosts.conf
 - hosts: tomcat-cluster
   serial: 1
 
@@ -53,4 +47,10 @@
           delegate_to: "{{item}}"
           with_items: groups.webservers
 
-# - name: If deployed to more than 50% nodes, replase old nodes from LB with new
+# for node of nodes
+#   try
+#     exclude node
+#     deploy war to tomcat
+#     include node
+#   catch
+#     exclude node

@@ -1,4 +1,4 @@
 httpd ansible_connection=docker
 
 [tomcat-cluster]
-tom-[a:c] ansible_connection=docker
+tom-[a:c] ansible_connection=docker apache_loadfactor=1
