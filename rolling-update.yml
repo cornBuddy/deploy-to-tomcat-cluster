@@ -2,23 +2,22 @@
 # https://docs.ansible.com/ansible/2.6/user_guide/playbooks_blocks.html#error-handling
 # https://docs.ansible.com/ansible/latest/user_guide/playbooks_delegation.html#rolling-update-batch-size
 # https://docs.ansible.com/ansible/2.6/scenario_guides/guide_rolling_upgrade.html
-# ansible-playbook rolling-update.yml -i inventory --extra-vars \
-# "deploy_uri=/jsp_servlet_example artifact_path=./jsp-servlet-example.war deployer=deployer deployer_password=s3cret"
+# ansible-playbook rolling-update.yml -i inventory --extra-vars "deploy_uri=/jsp_servlet_example artifact_path=./jsp-servlet-example.war deployer=deployer deployer_password=s3cret"
 - hosts: tomcat-cluster
   serial: 1
 
   pre_tasks:
-      # - name: Configure tomcat user
-      # - include_role:
-      # -   name: add_user
-      # - vars:
-      # -   config:
-      # -     name: tomcat
-      # -     primary_group: tomcat
-      # -     id: 1000
-      # -     group_id: 1000
-      # -     priviliges:
-      # -       - "ALL=(ALL) NOPASSWD: ALL"
+    - name: Configure tomcat user
+      include_role:
+        name: add_user
+      vars:
+        config:
+          name: tomcat
+          primary_group: tomcat
+          id: 1000
+          group_id: 1000
+          priviliges:
+            - "ALL=(ALL) NOPASSWD: ALL"
     - name: Exclude node to deploy from LB
       import_role:
         name: httpd

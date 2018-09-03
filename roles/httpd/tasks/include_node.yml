@@ -6,6 +6,6 @@
   set_fact:
     processed_nodes: "{{processed_nodes + [node_hostname]}}"
   changed_when: true
+  delegate_facts: true
+  delegate_to: localhost
   notify: apply changes
-
-- debug: "msg={{processed_nodes}}"

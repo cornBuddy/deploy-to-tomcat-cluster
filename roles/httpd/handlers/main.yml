@@ -1,6 +1,6 @@
 ---
 - name: apply changes
-  command: hostname
+  debug: "msg={{processed_nodes}}"
   # fix:
   # /etc/libapache2-mod-jk/workers.properties
   # /usr/local/apache2/conf/extra/httpd-vhosts.conf
