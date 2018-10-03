@@ -14,8 +14,8 @@
 
 - name: generate vhosts.conf
   template:
-    src: httpd-vhosts.conf.j2
-    dest: /usr/local/apache2/conf/extra/httpd-vhosts.conf
+    src: tomcat-vhosts.conf.j2
+    dest: /usr/local/apache2/conf/extra/tomcat-vhosts.conf
     mode: 0644
     unsafe_writes: true
   notify: test configuration
